@@ -2,6 +2,9 @@
 
 Travlr Website for SNHU CS465 Full Stack Development Class
 
+Module 4
+----------
+Began transition for site to use database by seeding database with data from trips
 
 Module 3
 ----------
