@@ -9,12 +9,14 @@ const tripsController = require('../controllers/trips');
 // Get method for entire routes triplist
 router
     .route('/trips')
-    .get(tripsController.tripsList);
+    .get(tripsController.tripsList)  // Get method
+    .post(tripsController.tripsAddTrip); // Post Method
   
 // Get method for routes tripsFindByCode, require code parameter
 router
     .route('/trips/:tripCode')
-    .get(tripsController.tripsFindByCode); 
+    .get(tripsController.tripsFindByCode) 
+    .put(tripsController.tripsUpdateTrip);
 
 
 module.exports = router;
