@@ -1,9 +1,18 @@
+require('dotenv').config();
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+// Handlebars for client side
 const hbs = require("hbs");
+// For authentication
+const passport = require('passport');
+
+// Bring in the databases
+require('./app_api/models/db');
+require('./app_api/config/passport');
+//
 
 
 // Define Routers
@@ -20,10 +29,11 @@ var apiRouter =  require('./app_api/routes/index');
 
 var handlebars = require('hbs');
 
-// Bring in the databases
-require('./app_api/models/db');
+
 
 var app = express();
+
+//
 
 // view engine setup
 app.set('views', path.join(__dirname,'app_server', 'views'));
@@ -33,13 +43,6 @@ app.set('views', path.join(__dirname,'app_server', 'views'));
 //handlebars.registerPartials(__dirname + 'app_server/views/partials');
 hbs.registerPartials(path.join(__dirname, "app_server", "views/partials"));
 
-// Enable CORS
-app.use('/api', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.header('Access-Control-Allow-Methods','GET, POST, PUT, DELETE');
-  next();
-});
 
 
 app.set('view engine', 'hbs');
@@ -49,6 +52,20 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(passport.initialize());
+
+// Enable CORS
+app.use('/api', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
+  res.header(
+            'Access-Control-Allow-Headers', 
+            'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+            );
+  res.header('Access-Control-Allow-Methods','GET, POST, PUT, DELETE');
+  next();
+});
+
+
 
 // Routes to appropriate pages
 app.use('/', indexRouter);
@@ -64,6 +81,13 @@ app.use('/news', newsRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
+});
+
+// Authorizaton Error Handler
+app.use((err, req, res, next) => {
+  if (err.name === "UnauthorizedError") {
+    res.status(401).json({ message: err.name + ": " + err.message });
+  }
 });
 
 // error handler
