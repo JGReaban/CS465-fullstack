@@ -5,8 +5,10 @@ Travlr Website for SNHU CS465 Full Stack Development Class
 Module 7
 ---------
 Implemented SPA to require login to add and edit trips.
-Also added register and login methods, regiester is currently only 
+Also added register and login methods, register is currently only 
 possible via Postman
+
+Also accidently commited to baseline 6 instead of  7
 
 Module 6
 ---------
